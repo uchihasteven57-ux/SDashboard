@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Checking PWA</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Data Checker</h1>
+    <div class="actions">
+      <button id="refreshBtn">Refresh</button>
+      <button id="downloadBtn">Download</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="sidebar">
+      <div class="filters">
+        <label>
+          <input type="checkbox" id="groupToggle" />
+          Group by Rating
+        </label>
+        <select id="ratingSelect">
+          <option value="All">View All</option>
+          <option value="5">Rating 5</option>
+          <option value="4">Rating 4</option>
+          <option value="3">Rating 3</option>
+          <option value="2">Rating 2</option>
+          <option value="1">Rating 1</option>
+        </select>
+      </div>
+      <ul id="shopList"></ul>
+    </aside>
+
+    <section id="map"></section>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- App Logic -->
+  <script src="js/app.js" defer></script>
+</body>
+</html>
