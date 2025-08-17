@@ -2,11 +2,11 @@ const CACHE_NAME = 'static-cache-v1';
 const DATA_CACHE_NAME = 'data-cache-v1';
 
 const FILES_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/manifest.json',
+  './',
+  './index.html',
+  './css/style.css',
+  './js/app.js',
+  './manifest.json',
   'https://unpkg.com/leaflet/dist/leaflet.css',
   'https://unpkg.com/leaflet/dist/leaflet.js'
 ];
