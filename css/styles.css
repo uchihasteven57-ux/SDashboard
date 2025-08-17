@@ -12,11 +12,14 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--fg);
-  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -28,10 +31,6 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-header h1 {
-  font-size: 1.4rem;
 }
 
 header .actions button {
@@ -68,16 +67,6 @@ main {
   flex-direction: column;
 }
 
-.filters label {
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-}
-
-.filters input {
-  margin-right: 6px;
-}
-
 .filters select {
   padding: 6px;
   border-radius: 4px;
@@ -103,4 +92,10 @@ main {
 
 #map {
   flex: 1;
+  height: 100%; /* 🔹 ensures the map fills available space */
+}
+
+/* Make Leaflet map tiles adapt to dark UI */
+.leaflet-container {
+  background: #1e1e2f;
 }
