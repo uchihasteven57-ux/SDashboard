@@ -3,21 +3,15 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQUyjM9WjlMz2-T
 let map, markersLayer;
 let shops = [];
 
-const shopListEl   = document.getElementById('shopList');
-const groupToggle  = document.getElementById('groupToggle');
-const ratingSelect = document.getElementById('ratingSelect');
-const refreshBtn   = document.getElementById('refreshBtn');
-const downloadBtn  = document.getElementById('downloadBtn');
-
 document.addEventListener('DOMContentLoaded', () => {
   initMap();
   fetchAndRender();
   registerSW();
 
-  groupToggle.addEventListener('change', renderList);
-  ratingSelect.addEventListener('change', renderList);
-  refreshBtn.addEventListener('click', fetchAndRender);
-  downloadBtn.addEventListener('click', downloadData);
+  document.getElementById('groupToggle').addEventListener('change', renderList);
+  document.getElementById('ratingSelect').addEventListener('change', renderList);
+  document.getElementById('refreshBtn').addEventListener('click', fetchAndRender);
+  document.getElementById('downloadBtn').addEventListener('click', downloadData);
 });
 
 function initMap() {
@@ -29,7 +23,7 @@ function initMap() {
 }
 
 async function fetchAndRender() {
-  const res = await fetch(CSV_URL + '&_=' + Date.now()); // cache-bust
+  const res = await fetch(CSV_URL + '&_=' + Date.now(), { cache: 'no-store' });
   const text = await res.text();
   shops = parseCSV(text);
   renderList();
@@ -37,33 +31,37 @@ async function fetchAndRender() {
 }
 
 function parseCSV(csv) {
-  const rows = csv.trim().split('\n').map(r => r.split(','));
-  const headers = rows[0];
-  return rows.slice(1).map(r => {
-    return headers.reduce((acc, h, i) => {
-      acc[h.trim()] = r[i] ? r[i].trim() : '';
-      return acc;
+  const [headerLine, ...lines] = csv.trim().split('\n');
+  const headers = headerLine.split(',').map(h => h.trim());
+  return lines.map(line => {
+    const cols = line.split(',');
+    return headers.reduce((obj, key, i) => {
+      obj[key] = cols[i] ? cols[i].trim() : '';
+      return obj;
     }, {});
   });
 }
 
 function renderList() {
+  const shopListEl = document.getElementById('shopList');
   shopListEl.innerHTML = '';
-  const filtered = shops.filter(s => ratingSelect.value === 'All' || s.Rating === ratingSelect.value);
+  const ratingValue = document.getElementById('ratingSelect').value;
+  const groupToggle = document.getElementById('groupToggle').checked;
 
-  if (groupToggle.checked) {
+  const filtered = shops.filter(s => ratingValue === 'All' || s.Rating === ratingValue);
+
+  if (groupToggle) {
     const groups = filtered.reduce((acc, shop) => {
       acc[shop.Rating] = acc[shop.Rating] || [];
       acc[shop.Rating].push(shop);
       return acc;
     }, {});
-
-    Object.keys(groups).sort((a, b) => b - a).forEach(r => {
+    Object.keys(groups).sort((a, b) => b - a).forEach(rating => {
       const heading = document.createElement('li');
-      heading.textContent = `Rating ${r}`;
+      heading.textContent = `Rating ${rating}`;
       heading.style.fontWeight = 'bold';
       shopListEl.appendChild(heading);
-      groups[r].forEach(addShopItem);
+      groups[rating].forEach(addShopItem);
     });
   } else {
     filtered.forEach(addShopItem);
@@ -80,7 +78,7 @@ function addShopItem(shop) {
       map.setView([lat, lon], 16);
     }
   });
-  shopListEl.appendChild(li);
+  document.getElementById('shopList').appendChild(li);
 }
 
 function renderMap() {
@@ -97,10 +95,21 @@ function renderMap() {
 }
 
 function downloadData() {
+  if (!shops.length) return;
   const header = Object.keys(shops[0]).join(',');
   const rows = shops.map(s => Object.values(s).join(','));
   const csv = [header, ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
- 
+  a.href = url;
+  a.download = 'shops_data.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
+}
