@@ -41,11 +41,6 @@ header .actions button {
   padding: 8px 12px;
   cursor: pointer;
   border-radius: 4px;
-  transition: background 0.2s;
-}
-
-header .actions button:hover {
-  background: #2a2a3d;
 }
 
 main {
@@ -63,8 +58,6 @@ main {
 
 .filters {
   margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
 }
 
 .filters select {
@@ -75,15 +68,10 @@ main {
   color: var(--fg);
 }
 
-#shopList {
-  list-style: none;
-}
-
 #shopList li {
   padding: 8px 6px;
   cursor: pointer;
   border-radius: 4px;
-  transition: background 0.2s;
 }
 
 #shopList li:hover {
@@ -92,10 +80,9 @@ main {
 
 #map {
   flex: 1;
-  height: 100%; /* 🔹 ensures the map fills available space */
+  height: 100%;
 }
 
-/* Make Leaflet map tiles adapt to dark UI */
 .leaflet-container {
   background: #1e1e2f;
 }
